@@ -5,7 +5,7 @@ const port = 3000;
 
 app.use(express.json());
 
-app.use('/todoRoutes', todoRoutes);
+app.use('/', todoRoutes);
 
 app.listen(port, () => {
     console.log(`Server berjalan di http://localhost:${port}`);

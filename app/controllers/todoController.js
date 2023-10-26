@@ -7,7 +7,10 @@ const getTodos = (req, res) => {
                 error: 'Gagal mengambil data todo.'
             });
         }
-        res.status(200).json(todos);
+        res.status(200).json({
+            message: 'Data todo berhasil diambil.',
+            data: todos
+        });
     });
 };
 
@@ -21,7 +24,10 @@ const addTodo = (req, res) => {
                 error: 'Gagal menambahkan tugas baru.'
             });
         }
-        res.status(201).json(todo);
+        res.status(201).json({
+            message: 'Tugas baru berhasil ditambahkan.',
+            data: todo
+        });
     });
 };
 
@@ -39,7 +45,10 @@ const updateTodo = (req, res) => {
                 error: 'Gagal memperbarui tugas.'
             });
         }
-        res.status(200).json(todo);
+        res.status(200).json({
+            message: 'Tugas berhasil diperbarui.',
+            data: todo
+        });
     });
 };
 
@@ -54,7 +63,9 @@ const deleteTodo = (req, res) => {
                 error: 'Gagal menghapus tugas.'
             });
         }
-        res.status(204).send();
+        res.status(204).json({
+            message: 'Tugas berhasil dihapus.'
+        });
     });
 };
 
