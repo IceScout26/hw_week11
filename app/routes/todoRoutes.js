@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('./dbConfig'); // Impor konfigurasi database
+const db = require('../config/dbconfig'); // Impor konfigurasi database
 
 const router = express.Router();
 
