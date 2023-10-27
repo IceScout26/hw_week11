@@ -1,91 +1,81 @@
-const express = require('express');
-const db = require('../models/todoModel');
-const router = express.Router();
+const todoModel = require('../models/todoModel');
 
-// Menampilkan semua todo
-router.get('/todos', (req, res) => {
-    db.getAllTodos((err, result) => {
-        if (err) {
+const getTodos = (req, res) => {
+    todoModel.getAllTodos((error, todos) => {
+        if (error) {
             return res.status(500).json({
-                message: 'Terjadi kesalahan saat mengambil data todo.',
-                error: err
+                error: 'Gagal mengambil data todo.'
             });
         }
         res.status(200).json({
             message: 'Data todo berhasil diambil.',
-            data: result
+            data: todos
         });
     });
-});
+};
 
-// Menambahkan todo baru
-router.post('/todos', (req, res) => {
-    const title = req.body.title;
-
-    if (!title) {
-        return res.status(400).json({
-            message: 'Title tidak boleh kosong.'
-        });
-    }
-
-    db.addTodo(title, (err, result) => {
-        if (err) {
+const addTodo = (req, res) => {
+    const {
+        title
+    } = req.body;
+    todoModel.addTodo(title, (error, todo) => {
+        if (error) {
             return res.status(500).json({
-                message: 'Terjadi kesalahan saat menambahkan todo.',
-                error: err
+                error: 'Gagal menambahkan tugas baru.'
             });
         }
         res.status(201).json({
             message: 'Tugas baru berhasil ditambahkan.',
-            data: result
+            data: todo
         });
     });
-});
+};
 
-// Memperbarui todo
-router.put('/todos/:id', (req, res) => {
-    const id = req.params.id;
-    const title = req.body.title;
+const updateTodo = (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
 
-    if (!title) {
+    if (!id) {
         return res.status(400).json({
-            message: 'Title tidak boleh kosong.'
+            error: 'ID tugas tidak valid.'
         });
     }
 
-    db.updateTodo(id, title, (err, result) => {
-        if (err) {
+    todoModel.updateTodo(id, title, (error, todo) => {
+        if (error) {
             return res.status(500).json({
-                message: 'Terjadi kesalahan saat memperbarui todo.',
-                error: err
+                error: 'Gagal memperbarui tugas.'
             });
         }
-        if (result) {
-            res.status(200).json({
-                message: 'Tugas berhasil diperbarui.',
-                data: result
-            });
-        } else {
-            res.status(404).json({
-                message: 'Todo tidak ditemukan.'
-            });
-        }
+        // Perbarui respons Anda untuk mencakup 'message' dan 'data'
+        res.status(200).json({
+            message: 'Tugas berhasil diperbarui.',
+            data: todo
+        });
     });
-});
+};
 
-// Menghapus todo
-router.delete('/todos/:id', (req, res) => {
-    const id = req.params.id;
 
-    db.deleteTodo(id, (err) => {
-        if (err) {
+const deleteTodo = (req, res) => {
+    const {
+        id
+    } = req.params;
+
+    todoModel.deleteTodo(id, (error) => {
+        if (error) {
             return res.status(500).json({
-                message: 'Terjadi kesalahan saat menghapus todo.',
-                error: err
+                error: 'Gagal menghapus tugas.'
             });
         }
-        res.status(204).send();
+        res.status(204).json({
+            message: 'Tugas berhasil dihapus.'
+        });
     });
-});
+};
 
-module.exports = router;
+module.exports = {
+    getTodos,
+    addTodo,
+    updateTodo,
+    deleteTodo,
+};
