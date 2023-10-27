@@ -7,8 +7,8 @@ app.use(express.json());
 
 app.use('/', todoRoutes);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server berjalan di http://localhost:${port}`);
 });
 
-module.exports = app; // Mengekspor app
+module.exports = server; // Mengekspor server
