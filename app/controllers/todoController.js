@@ -1,68 +1,91 @@
-const request = require('supertest');
-const app = require('../app/controllers/todoController'); // Sesuaikan dengan jalur yang benar ke kontroler Anda
+const express = require('express');
+const db = require('../models/todoModel');
+const router = express.Router();
 
-describe('Todo Controller', () => {
-    test('should get all todos', (done) => {
-        request(app)
-            .get('/todos') // Sesuaikan dengan rute yang benar
-            .expect(200)
-            .then((res) => {
-                expect(res.body).toHaveProperty('message', 'Data todo berhasil diambil.');
-                expect(res.body).toHaveProperty('data');
-                done();
-            })
-            .catch((err) => {
-                done(err);
+// Menampilkan semua todo
+router.get('/todos', (req, res) => {
+    db.getAllTodos((err, result) => {
+        if (err) {
+            return res.status(500).json({
+                message: 'Terjadi kesalahan saat mengambil data todo.',
+                error: err
             });
-    });
-
-    test('should add a new todo', (done) => {
-        const newTodo = {
-            title: 'New Todo'
-        };
-        request(app)
-            .post('/todos') // Sesuaikan dengan rute yang benar
-            .send(newTodo)
-            .expect(201)
-            .then((res) => {
-                expect(res.body).toHaveProperty('message', 'Tugas baru berhasil ditambahkan.');
-                expect(res.body).toHaveProperty('data');
-                done();
-            })
-            .catch((err) => {
-                done(err);
-            });
-    });
-
-    test('should update a todo', (done) => {
-        const updatedTodo = {
-            id: 1,
-            title: 'Updated Todo'
-        };
-        request(app)
-            .put(`/todos/${updatedTodo.id}`) // Sesuaikan dengan rute yang benar
-            .send(updatedTodo)
-            .expect(200)
-            .then((res) => {
-                expect(res.body).toHaveProperty('message', 'Tugas berhasil diperbarui.');
-                expect(res.body).toHaveProperty('data');
-                done();
-            })
-            .catch((err) => {
-                done(err);
-            });
-    });
-
-    test('should delete a todo', (done) => {
-        const todoId = 1;
-        request(app)
-            .delete(`/todos/${todoId}`) // Sesuaikan dengan rute yang benar
-            .expect(204)
-            .then((res) => {
-                done();
-            })
-            .catch((err) => {
-                done(err);
-            });
+        }
+        res.status(200).json({
+            message: 'Data todo berhasil diambil.',
+            data: result
+        });
     });
 });
+
+// Menambahkan todo baru
+router.post('/todos', (req, res) => {
+    const title = req.body.title;
+
+    if (!title) {
+        return res.status(400).json({
+            message: 'Title tidak boleh kosong.'
+        });
+    }
+
+    db.addTodo(title, (err, result) => {
+        if (err) {
+            return res.status(500).json({
+                message: 'Terjadi kesalahan saat menambahkan todo.',
+                error: err
+            });
+        }
+        res.status(201).json({
+            message: 'Tugas baru berhasil ditambahkan.',
+            data: result
+        });
+    });
+});
+
+// Memperbarui todo
+router.put('/todos/:id', (req, res) => {
+    const id = req.params.id;
+    const title = req.body.title;
+
+    if (!title) {
+        return res.status(400).json({
+            message: 'Title tidak boleh kosong.'
+        });
+    }
+
+    db.updateTodo(id, title, (err, result) => {
+        if (err) {
+            return res.status(500).json({
+                message: 'Terjadi kesalahan saat memperbarui todo.',
+                error: err
+            });
+        }
+        if (result) {
+            res.status(200).json({
+                message: 'Tugas berhasil diperbarui.',
+                data: result
+            });
+        } else {
+            res.status(404).json({
+                message: 'Todo tidak ditemukan.'
+            });
+        }
+    });
+});
+
+// Menghapus todo
+router.delete('/todos/:id', (req, res) => {
+    const id = req.params.id;
+
+    db.deleteTodo(id, (err) => {
+        if (err) {
+            return res.status(500).json({
+                message: 'Terjadi kesalahan saat menghapus todo.',
+                error: err
+            });
+        }
+        res.status(204).send();
+    });
+});
+
+module.exports = router;
