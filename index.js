@@ -10,3 +10,5 @@ app.use('/', todoRoutes);
 app.listen(port, () => {
     console.log(`Server berjalan di http://localhost:${port}`);
 });
+
+module.exports = app; // Mengekspor app

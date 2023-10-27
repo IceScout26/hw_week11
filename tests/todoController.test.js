@@ -1,10 +1,12 @@
 const request = require('supertest');
-const app = require('../app/controllers/todoController'); // Sesuaikan dengan jalur yang benar ke kontroler Anda
+const app = require('../index');
+// const appController = require('../app/controllers/todoController');
+// const appModel = require('../app/models/todoModel');
 
 describe('Todo Controller', () => {
     test('should get all todos', (done) => {
         request(app)
-            .get('/todos') // Sesuaikan dengan rute yang benar
+            .get('/todos')
             .expect(200)
             .then((res) => {
                 expect(res.body).toHaveProperty('message', 'Data todo berhasil diambil.');
@@ -18,10 +20,10 @@ describe('Todo Controller', () => {
 
     test('should add a new todo', (done) => {
         const newTodo = {
-            title: 'New Todo'
+            title: 'New Todo',
         };
         request(app)
-            .post('/todos') // Sesuaikan dengan rute yang benar
+            .post('/todos')
             .send(newTodo)
             .expect(201)
             .then((res) => {
@@ -37,10 +39,10 @@ describe('Todo Controller', () => {
     test('should update a todo', (done) => {
         const updatedTodo = {
             id: 1,
-            title: 'Updated Todo'
+            title: 'Updated Todo',
         };
         request(app)
-            .put(`/todos/${updatedTodo.id}`) // Sesuaikan dengan rute yang benar
+            .put(`/todos/${updatedTodo.id}`)
             .send(updatedTodo)
             .expect(200)
             .then((res) => {
@@ -56,7 +58,7 @@ describe('Todo Controller', () => {
     test('should delete a todo', (done) => {
         const todoId = 1;
         request(app)
-            .delete(`/todos/${todoId}`) // Sesuaikan dengan rute yang benar
+            .delete(`/todos/${todoId}`)
             .expect(204)
             .then((res) => {
                 done();
