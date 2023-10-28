@@ -23,10 +23,10 @@ build:
       --build-arg PORT=sPORT
       --no-cache .
       - echo "Tagging image..."
-      - docker tad docker-app:latest $REPOSITORY_URL:latest
-      - echo "Pushing image..."
-      - docker push $REPOSITORY_URL:latest
-    only:
+    - docker tad docker-app:latest $REPOSITORY_URL:latest
+    - echo "Pushing image..."
+    - docker push $REPOSITORY_URL:latest
+  only:
       - master
 
 deploy:
