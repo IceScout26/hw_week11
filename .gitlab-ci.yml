@@ -26,7 +26,7 @@ build:
     - docker tad docker-app:latest $REPOSITORY_URL:latest
     - echo "Pushing image..."
     - docker push $REPOSITORY_URL:latest
-  only:
+    only:
       - master
 
 deploy:
